@@ -6,17 +6,17 @@ interface IVariant extends TVariant, Document {}
 interface IInventory extends TInventory, Document {}
 interface IPhones extends TPhones, Document {}
 
-// Define the Variant schema
+// Define the Variant schema without _id
 const variantSchema = new Schema<IVariant>({
   type: { type: String, required: true },
   value: { type: String, required: true },
-});
+}, { _id: false });
 
-// Define the Inventory schema
+// Define the Inventory schema without _id
 const inventorySchema = new Schema<IInventory>({
   quantity: { type: Number, required: true, min: 0 },
   inStock: { type: Boolean, required: true },
-});
+}, { _id: false });
 
 // Define the Phones schema
 const phonesSchema = new Schema<IPhones>({
