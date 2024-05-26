@@ -1,20 +1,25 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 import { TInventory, TPhones, TVariant } from './phones.interface';
 
+// Mongoose document interfaces
+interface IVariant extends TVariant, Document {}
+interface IInventory extends TInventory, Document {}
+interface IPhones extends TPhones, Document {}
+
 // Define the Variant schema
-const variantSchema = new Schema<TVariant>({
+const variantSchema = new Schema<IVariant>({
   type: { type: String, required: true },
   value: { type: String, required: true },
 });
 
 // Define the Inventory schema
-const inventorySchema = new Schema<TInventory>({
+const inventorySchema = new Schema<IInventory>({
   quantity: { type: Number, required: true, min: 0 },
   inStock: { type: Boolean, required: true },
 });
 
 // Define the Phones schema
-const phonesSchema = new Schema<TPhones>({
+const phonesSchema = new Schema<IPhones>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
@@ -24,4 +29,5 @@ const phonesSchema = new Schema<TPhones>({
   inventory: { type: inventorySchema, required: true },
 });
 
-export const  Phones = model<TPhones>('Phones', phonesSchema)
+// Create the Phones model
+export const Phones = model<IPhones>('Phones', phonesSchema);
