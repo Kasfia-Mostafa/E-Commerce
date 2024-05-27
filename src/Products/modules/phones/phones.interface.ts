@@ -19,3 +19,4 @@ export type TPhones = {
 };
 
 export type TPhonesArray = TPhones[];
+export type UpdatePhoneData = Partial<TPhones>;

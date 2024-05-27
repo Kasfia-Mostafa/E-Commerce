@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PhonesControllers = void 0;
 const phones_service_1 = require("./phones.service");
-const phones_model_1 = require("./phones.model");
+// import { Phones } from './phones.model';
 const phones_zod_validation_1 = __importDefault(require("./phones.zod.validation"));
 // Adding phones to the site
 const createPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const phonesData = req.body;
-        // Validate the incoming data
         const zodParseData = phones_zod_validation_1.default.parse(phonesData);
         // Create phones in the database
         const result = yield phones_service_1.PhonesServices.createPhonesInDB(zodParseData);
@@ -83,16 +82,15 @@ const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { productId } = req.params;
         const updateDataProduct = req.body;
-        const result = yield phones_service_1.PhonesServices.updateProductByIDInDB(productId, updateDataProduct);
-        const updatedEachPhone = yield phones_model_1.Phones.findById(productId);
+        const updatedPhone = yield phones_service_1.PhonesServices.updateProductByIDInDB(productId, updateDataProduct);
         res.status(200).json({
             success: true,
             message: 'Product updated successfully!',
-            data: updatedEachPhone,
+            data: updatedPhone,
         });
     }
-    catch (err) {
-        console.log(err);
+    catch (error) {
+        console.error(error);
         res.status(500).json({
             success: false,
             message: 'Internal Server Error',
@@ -103,15 +101,21 @@ const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const deletePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.params;
-        const result = yield phones_service_1.PhonesServices.deleteProductFromDB(productId);
+        const deletedPhone = yield phones_service_1.PhonesServices.deleteProductFromDB(productId);
+        if (!deletedPhone) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found!',
+            });
+        }
         res.status(200).json({
             success: true,
             message: 'Product deleted successfully!',
             data: null,
         });
     }
-    catch (err) {
-        console.log(err);
+    catch (error) {
+        console.error(error);
         res.status(500).json({
             success: false,
             message: 'Internal Server Error',

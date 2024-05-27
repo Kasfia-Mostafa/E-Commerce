@@ -1,6 +1,6 @@
-import { Document } from "mongoose";
 
-export interface TOrder extends Document {
+// Define the TOrder interface
+export interface TOrder {
   email: string;
   productId: string;
   price: number;
@@ -8,7 +8,7 @@ export interface TOrder extends Document {
 }
 
 // Define the TUser interface
-export interface TUser extends Document {
+export interface TUser {
   name: string;
   address: string;
   number: string;

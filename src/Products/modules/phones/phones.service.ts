@@ -1,4 +1,4 @@
-import { TPhonesArray } from './phones.interface';
+import { TPhonesArray, UpdatePhoneData } from './phones.interface';
 import { Phones } from './phones.model';
 
 // Add phone
@@ -28,7 +28,7 @@ const getSingleProductFromDB = async (id: string) => {
 };
 
 //  Update product info
-const updateProductByIDInDB = async (id: string, updateData: any) => {
+const updateProductByIDInDB = async (id: string, updateData: UpdatePhoneData) => {
   const updatedPhone = await Phones.updateOne({
     _id: id,
     $set: updateData,

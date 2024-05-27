@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PhonesServices } from './phones.service';
-import { Phones } from './phones.model';
+// import { Phones } from './phones.model';
 import phonesArrayValidationSchema from './phones.zod.validation';
 import { TPhonesArray } from './phones.interface';
 
@@ -8,8 +8,6 @@ import { TPhonesArray } from './phones.interface';
 const createPhones = async (req: Request, res: Response) => {
   try {
     const phonesData = req.body;
-
-    // Validate the incoming data
     const zodParseData = phonesArrayValidationSchema.parse(
       phonesData
     ) as TPhonesArray;
@@ -79,18 +77,17 @@ const updatePhone = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const updateDataProduct = req.body;
-    const result = await PhonesServices.updateProductByIDInDB(
+    const updatedPhone = await PhonesServices.updateProductByIDInDB(
       productId,
       updateDataProduct
     );
-    const updatedEachPhone = await Phones.findById(productId);
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',
-      data: updatedEachPhone,
+      data: updatedPhone,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error',
@@ -102,14 +99,22 @@ const updatePhone = async (req: Request, res: Response) => {
 const deletePhone = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    const result = await PhonesServices.deleteProductFromDB(productId);
+    const deletedPhone = await PhonesServices.deleteProductFromDB(productId);
+
+    if (!deletedPhone) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found!',
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
       data: null,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error',

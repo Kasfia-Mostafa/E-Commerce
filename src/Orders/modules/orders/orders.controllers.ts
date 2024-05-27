@@ -5,7 +5,7 @@ import { OrderValidation } from './orders.zod.validation';
 // Ordering phones
 const createOrders = async (req: Request, res: Response) => {
   try {
-    const zodParsedData = OrderValidation.parse(req.body); 
+    const zodParsedData = OrderValidation.parse(req.body);
     const result = await OrdersService.createOrdersInDB(zodParsedData);
 
     res.status(200).json({
