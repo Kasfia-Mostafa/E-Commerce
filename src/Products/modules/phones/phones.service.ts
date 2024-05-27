@@ -7,8 +7,8 @@ const createPhonesInDB = async (payload: TPhones) => {
   return result;
 };
 
-// Get all phones amd serach
-const getAllOrSearchPhonesFromDB =  async (searchTerm?: string) => {
+// Get all phones
+const getAllOrSearchPhonesFromDB = async (searchTerm?: string) => {
   if (searchTerm) {
     const regexPattern = new RegExp(searchTerm, 'i');
     return Phones.find({
@@ -49,7 +49,6 @@ export const PhonesServices = {
   getSingleProductFromDB,
   updateProductByIDInDB,
   deleteProductFromDB,
-  // searchProductsFromDB,
 };
 
 export { updateProductByIDInDB };
