@@ -22,16 +22,21 @@ const createPhones = async (req: Request, res: Response) => {
 };
 
 // Get all phones data
-const getAllPhones = async (req: Request, res: Response) => {
+const getAllOrSearchPhones = async (req: Request, res: Response) => {
   try {
-    const result = await PhonesServices.getAllPhonesFromDB();
+    const searchTerm = req.query.searchTerm as string;
+    const products = await PhonesServices.getAllOrSearchPhonesFromDB(searchTerm);
+    const message = searchTerm
+      ? `Products matching search term '${searchTerm}' fetched successfully!`
+      : 'All phones fetched successfully!';
+    
     res.status(200).json({
       success: true,
-      message: 'Products fetched successfully!',
-      data: result,
+      message,
+      data: products,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error',
@@ -100,9 +105,10 @@ const deletePhone = async (req: Request, res: Response) => {
   }
 };
 
+
 export const PhonesControllers = {
   createPhones,
-  getAllPhones,
+  getAllOrSearchPhones,
   getSinglePhone,
   updatePhone,
   deletePhone,
