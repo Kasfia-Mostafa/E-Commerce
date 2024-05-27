@@ -17,3 +17,5 @@ export type TPhones = {
   variants: TVariant[];
   inventory: TInventory;
 };
+
+export type TPhonesArray = TPhones[];

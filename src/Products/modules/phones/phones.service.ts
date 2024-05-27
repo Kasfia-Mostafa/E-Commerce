@@ -1,11 +1,10 @@
-import { TPhones } from './phones.interface';
+import { TPhonesArray } from './phones.interface';
 import { Phones } from './phones.model';
 
 // Add phone
-const createPhonesInDB = async (payload: TPhones) => {
-  const result = await Phones.create(payload);
-  return result;
-};
+const createPhonesInDB = async (phonesData: TPhonesArray) => {
+    return await Phones.insertMany(phonesData);
+  }
 
 // Get all phones
 const getAllOrSearchPhonesFromDB = async (searchTerm?: string) => {
@@ -42,7 +41,6 @@ const deleteProductFromDB = async (id: string) => {
   const result = await Phones.deleteOne({ _id: id });
   return result;
 };
-
 
 
 export const PhonesServices = {

@@ -1,12 +1,22 @@
 import { Request, Response } from 'express';
 import { PhonesServices } from './phones.service';
 import { Phones } from './phones.model';
+import phonesArrayValidationSchema from './phones.zod.validation';
+import {  TPhonesArray } from './phones.interface';
 
 // Adding phones to the site
 const createPhones = async (req: Request, res: Response) => {
   try {
+
+    
     const phonesData = req.body;
-    const result = await PhonesServices.createPhonesInDB(phonesData);
+
+    // Validate the incoming data
+    const zodParseData = phonesArrayValidationSchema.parse(phonesData) as TPhonesArray;
+
+    // Create phones in the database
+    const result = await PhonesServices.createPhonesInDB(zodParseData);
+
     res.status(200).json({
       success: true,
       message: 'Product created successfully!',
