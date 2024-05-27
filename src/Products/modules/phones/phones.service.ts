@@ -43,6 +43,8 @@ const deleteProductFromDB = async (id: string) => {
   return result;
 };
 
+
+
 export const PhonesServices = {
   createPhonesInDB,
   getAllOrSearchPhonesFromDB,
@@ -51,4 +53,4 @@ export const PhonesServices = {
   deleteProductFromDB,
 };
 
-export { updateProductByIDInDB };
+

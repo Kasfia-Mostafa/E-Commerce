@@ -7,6 +7,7 @@ const createOrdersInDB = async (payload: TOrder) => {
   return result;
 };
 
+//get all order and through email
 const getAllOrSearchOrdersFromDB = async (email:string) => {
     if (!email) {
       throw new Error('Email parameter is required');
@@ -14,7 +15,6 @@ const getAllOrSearchOrdersFromDB = async (email:string) => {
     const regexPattern = new RegExp(email, 'i');
     return Orders.findOne({ email: { $regex: regexPattern } });
   };
-  
 
 export const OrdersService = {
   createOrdersInDB,
