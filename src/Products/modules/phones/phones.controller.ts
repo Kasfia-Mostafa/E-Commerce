@@ -2,17 +2,17 @@ import { Request, Response } from 'express';
 import { PhonesServices } from './phones.service';
 import { Phones } from './phones.model';
 import phonesArrayValidationSchema from './phones.zod.validation';
-import {  TPhonesArray } from './phones.interface';
+import { TPhonesArray } from './phones.interface';
 
 // Adding phones to the site
 const createPhones = async (req: Request, res: Response) => {
   try {
-
-    
     const phonesData = req.body;
 
     // Validate the incoming data
-    const zodParseData = phonesArrayValidationSchema.parse(phonesData) as TPhonesArray;
+    const zodParseData = phonesArrayValidationSchema.parse(
+      phonesData
+    ) as TPhonesArray;
 
     // Create phones in the database
     const result = await PhonesServices.createPhonesInDB(zodParseData);
@@ -35,11 +35,13 @@ const createPhones = async (req: Request, res: Response) => {
 const getAllOrSearchPhones = async (req: Request, res: Response) => {
   try {
     const searchTerm = req.query.searchTerm as string;
-    const products = await PhonesServices.getAllOrSearchPhonesFromDB(searchTerm);
+    const products = await PhonesServices.getAllOrSearchPhonesFromDB(
+      searchTerm
+    );
     const message = searchTerm
       ? `Products matching search term '${searchTerm}' fetched successfully!`
       : 'All phones fetched successfully!';
-    
+
     res.status(200).json({
       success: true,
       message,
@@ -114,7 +116,6 @@ const deletePhone = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 export const PhonesControllers = {
   createPhones,
