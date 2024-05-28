@@ -1,4 +1,19 @@
 
+# E-Commerce
+
+### Project Overview
+This project is a Node.js application using TypeScript, Express, and Mongoose. It is configured to use ESLint and Prettier for code quality and formatting.
+
+### Pre-requisites
+Before you begin, ensure you have the following installed on your local machine:
+
+Node.js 
+
+npm 
+
+
+
+
 ## Installation
 
 ### 1. Initialize the Project
