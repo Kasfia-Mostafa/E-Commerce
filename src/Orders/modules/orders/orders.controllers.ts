@@ -7,7 +7,6 @@ import { Phones } from '../../../Products/modules/phones/phones.model';
 // Ordering phones
 const createOrders = async (req: Request, res: Response) => {
   try {
-    // Validate the input data
     const zodParsedData = OrderValidation.parse(req.body);
     const { email, productId, quantity } = zodParsedData;
 
@@ -60,7 +59,6 @@ const createOrders = async (req: Request, res: Response) => {
   }
 };
 
-// Get order all and by email
 const getAllOrSearchOrders = async (req: Request, res: Response) => {
   try {
     const { email } = req.query;
@@ -73,7 +71,7 @@ const getAllOrSearchOrders = async (req: Request, res: Response) => {
           message: 'Email must be a string',
         });
       }
-      result = await OrdersService.getAllSearchedOrdersFromDB(email);
+      result = await OrdersService.getAllSearchedOrdersFromDB(email as string); 
     } else {
       result = await OrdersService.getAllSearchedOrdersFromDB();
     }
@@ -85,20 +83,19 @@ const getAllOrSearchOrders = async (req: Request, res: Response) => {
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: email
-        ? `Orders fetched successfully for user email`
-        : 'Orders fetched successfully',
       data: result,
     });
   } catch (error) {
-    return res.status(500).json({
+    console.error('Error retrieving orders:', error);
+    res.status(500).json({
       success: false,
-      message: 'Internal Server Error',
+      message: 'Internal server error',
     });
   }
 };
+
 
 export const ordersControllers = {
   createOrders,

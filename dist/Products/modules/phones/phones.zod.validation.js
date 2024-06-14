@@ -21,6 +21,4 @@ const phoneSchema = zod_1.z.object({
     variants: zod_1.z.array(variantSchema).nonempty({ message: "Variants are required" }),
     inventory: inventorySchema,
 });
-// Create a schema for an array of phones
-const phonesArrayValidationSchema = zod_1.z.array(phoneSchema);
-exports.default = phonesArrayValidationSchema;
+exports.default = phoneSchema;

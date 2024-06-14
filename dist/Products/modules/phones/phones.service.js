@@ -13,7 +13,8 @@ exports.PhonesServices = void 0;
 const phones_model_1 = require("./phones.model");
 // Add phone
 const createPhonesInDB = (phonesData) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield phones_model_1.Phones.insertMany(phonesData);
+    const result = yield phones_model_1.Phones.create(phonesData);
+    return result;
 });
 // Get all phones
 const getAllOrSearchPhonesFromDB = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,12 +36,23 @@ const getSingleProductFromDB = (id) => __awaiter(void 0, void 0, void 0, functio
     return result;
 });
 //  Update product info
-const updateProductByIDInDB = (id, updateData) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedPhone = yield phones_model_1.Phones.updateOne({
-        _id: id,
-        $set: updateData,
-    });
-    return updatedPhone;
+const updateProductByIdInDB = (id, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const updatedResult = yield phones_model_1.Phones.updateOne({ _id: id }, { $set: updateData });
+        if (updatedResult.matchedCount === 0) {
+            throw new Error('No phone found with the provided ID');
+        }
+        // Fetch the updated document
+        const updatedPhone = yield phones_model_1.Phones.findById(id).lean();
+        if (!updatedPhone) {
+            throw new Error('Failed to fetch the updated phone');
+        }
+        return updatedPhone;
+    }
+    catch (error) {
+        console.error('Error updating phone data:', error);
+        throw error;
+    }
 });
 // Delete product
 const deleteProductFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,6 +63,6 @@ exports.PhonesServices = {
     createPhonesInDB,
     getAllOrSearchPhonesFromDB,
     getSingleProductFromDB,
-    updateProductByIDInDB,
+    updateProductByIdInDB,
     deleteProductFromDB,
 };

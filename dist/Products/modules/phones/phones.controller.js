@@ -14,13 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PhonesControllers = void 0;
 const phones_service_1 = require("./phones.service");
-// import { Phones } from './phones.model';
 const phones_zod_validation_1 = __importDefault(require("./phones.zod.validation"));
 // Adding phones to the site
 const createPhones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const phonesData = req.body;
-        const zodParseData = phones_zod_validation_1.default.parse(phonesData);
+        const zodParseData = phones_zod_validation_1.default.parse(req.body);
         // Create phones in the database
         const result = yield phones_service_1.PhonesServices.createPhonesInDB(zodParseData);
         res.status(200).json({
@@ -82,7 +80,7 @@ const updatePhone = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { productId } = req.params;
         const updateDataProduct = req.body;
-        const updatedPhone = yield phones_service_1.PhonesServices.updateProductByIDInDB(productId, updateDataProduct);
+        const updatedPhone = yield phones_service_1.PhonesServices.updateProductByIdInDB(productId, updateDataProduct);
         res.status(200).json({
             success: true,
             message: 'Product updated successfully!',

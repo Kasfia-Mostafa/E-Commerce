@@ -8,7 +8,7 @@ const createOrdersInDB = async (payload: TOrder) => {
 };
 
 // Get all orders or search by email
-const getAllSearchedOrdersFromDB = async (email: string) => {
+const getAllSearchedOrdersFromDB = async (email?: string) => {
   if (email) {
     const regexPattern = new RegExp(email, 'i');
     return OrderModel.find({ email: { $regex: regexPattern } });

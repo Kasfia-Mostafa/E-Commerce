@@ -17,14 +17,16 @@ const createOrdersInDB = (payload) => __awaiter(void 0, void 0, void 0, function
     return result;
 });
 // Get all orders or search by email
-const getAllOrSearchOrdersFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!email) {
-        throw new Error('Email parameter is required');
+const getAllSearchedOrdersFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    if (email) {
+        const regexPattern = new RegExp(email, 'i');
+        return orders_model_1.OrderModel.find({ email: { $regex: regexPattern } });
     }
-    const regexPattern = new RegExp(email, 'i');
-    return orders_model_1.OrderModel.find({ email: { $regex: regexPattern } });
+    else {
+        return orders_model_1.OrderModel.find();
+    }
 });
 exports.OrdersService = {
     createOrdersInDB,
-    getAllOrSearchOrdersFromDB,
+    getAllSearchedOrdersFromDB,
 };

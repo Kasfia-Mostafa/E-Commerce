@@ -28,18 +28,18 @@ const mongoose_1 = __importStar(require("mongoose"));
 // Define the schema for the Order collection
 const orderSchema = new mongoose_1.Schema({
     email: { type: String, required: true },
-    productId: { type: String, required: true },
+    productId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Product', required: true },
     price: { type: Number, required: true },
-    quantity: { type: Number, required: true }
+    quantity: { type: Number, required: true },
 });
 // Define the schema for the User collection
 const userSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     address: { type: String, required: true },
     number: { type: String, required: true },
-    email: { type: String, required: true }
+    email: { type: String, required: true },
 });
 // Define and export the Order model
-exports.OrderModel = mongoose_1.default.model("Order", orderSchema);
+exports.OrderModel = mongoose_1.default.model('Order', orderSchema);
 // Define and export the User model
-exports.UserModel = mongoose_1.default.model("User", userSchema);
+exports.UserModel = mongoose_1.default.model('User', userSchema);

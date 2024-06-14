@@ -12,50 +12,90 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersControllers = void 0;
 const orders_service_1 = require("./orders.service");
 const orders_zod_validation_1 = require("./orders.zod.validation");
+const orders_model_1 = require("./orders.model");
+const phones_model_1 = require("../../../Products/modules/phones/phones.model");
 // Ordering phones
 const createOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const zodParsedData = orders_zod_validation_1.OrderValidation.parse(req.body);
-        const result = yield orders_service_1.OrdersService.createOrdersInDB(zodParsedData);
-        res.status(200).json({
+        const { email, productId, quantity } = zodParsedData;
+        // Find the product in the inventory
+        const availablePhones = yield phones_model_1.Phones.findById(productId);
+        if (!availablePhones) {
+            return res
+                .status(404)
+                .json({ success: false, message: 'Product not found' });
+        }
+        // Check if sufficient quantity is available
+        if (availablePhones.inventory.quantity < quantity) {
+            return res
+                .status(400)
+                .json({ success: false, message: 'Insufficient quantity available in inventory' });
+        }
+        // Update inventory quantity and inStock status
+        availablePhones.inventory.quantity -= quantity;
+        availablePhones.inventory.inStock = availablePhones.inventory.quantity > 0;
+        yield availablePhones.save();
+        // Create the order
+        const price = availablePhones.price;
+        const newOrder = new orders_model_1.OrderModel({
+            email,
+            productId: availablePhones._id,
+            quantity,
+            price,
+        });
+        const result = yield newOrder.save();
+        res.status(201).json({
             success: true,
             message: 'Order created successfully!',
             data: result,
         });
     }
     catch (err) {
-        console.log(err);
+        if (err instanceof Error &&
+            (err.message === 'Product not found' ||
+                err.message === 'Insufficient quantity available in inventory')) {
+            return res.status(400).json({ success: false, message: err.message });
+        }
         res.status(500).json({
             success: false,
             message: 'Internal Server Error',
         });
     }
 });
-// Get order all and by email
 const getAllOrSearchOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.query;
-        if (typeof email !== 'string') {
-            return res
-                .status(400)
-                .json({ success: false, message: 'Email is required' });
+        let result;
+        if (email) {
+            if (typeof email !== 'string') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email must be a string',
+                });
+            }
+            result = yield orders_service_1.OrdersService.getAllSearchedOrdersFromDB(email);
         }
-        const result = yield orders_service_1.OrdersService.getAllOrSearchOrdersFromDB(email);
-        if (!result) {
-            return res
-                .status(404)
-                .json({ success: false, message: 'Order not found' });
+        else {
+            result = yield orders_service_1.OrdersService.getAllSearchedOrdersFromDB();
         }
-        return res.status(200).json({
+        if (!result || result.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found',
+            });
+        }
+        res.status(200).json({
             success: true,
-            message: `Orders fetched successfully for user email`,
             data: result,
         });
     }
     catch (error) {
-        return res
-            .status(500)
-            .json({ success: false, message: 'Internal Server Error' });
+        console.error('Error retrieving orders:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
     }
 });
 exports.ordersControllers = {
