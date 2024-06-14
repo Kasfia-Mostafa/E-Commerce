@@ -1,8 +1,9 @@
+import { Types } from "mongoose";
 
 // Define the TOrder interface
 export interface TOrder {
   email: string;
-  productId: string;
+  productId: Types.ObjectId;
   price: number;
   quantity: number;
 }

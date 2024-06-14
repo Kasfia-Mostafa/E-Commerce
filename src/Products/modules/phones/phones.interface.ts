@@ -18,5 +18,5 @@ export type TPhones = {
   inventory: TInventory;
 };
 
-export type TPhonesArray = TPhones[];
+// export type TPhonesArray = TPhones[];
 export type UpdatePhoneData = Partial<TPhones>;

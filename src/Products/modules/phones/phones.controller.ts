@@ -1,17 +1,12 @@
 import { Request, Response } from 'express';
 import { PhonesServices } from './phones.service';
-// import { Phones } from './phones.model';
-import phonesArrayValidationSchema from './phones.zod.validation';
-import { TPhonesArray } from './phones.interface';
+import phoneSchema from './phones.zod.validation';
+
 
 // Adding phones to the site
 const createPhones = async (req: Request, res: Response) => {
   try {
-    const phonesData = req.body;
-    const zodParseData = phonesArrayValidationSchema.parse(
-      phonesData
-    ) as TPhonesArray;
-
+    const zodParseData = phoneSchema.parse(req.body);
     // Create phones in the database
     const result = await PhonesServices.createPhonesInDB(zodParseData);
 
@@ -77,10 +72,8 @@ const updatePhone = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const updateDataProduct = req.body;
-    const updatedPhone = await PhonesServices.updateProductByIDInDB(
-      productId,
-      updateDataProduct
-    );
+    const updatedPhone = await PhonesServices.updateProductByIdInDB(productId, updateDataProduct);
+    
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',

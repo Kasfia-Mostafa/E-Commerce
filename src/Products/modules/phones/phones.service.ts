@@ -1,10 +1,11 @@
-import { TPhonesArray, UpdatePhoneData } from './phones.interface';
+import { TPhones, UpdatePhoneData } from './phones.interface';
 import { Phones } from './phones.model';
 
 // Add phone
-const createPhonesInDB = async (phonesData: TPhonesArray) => {
-    return await Phones.insertMany(phonesData);
-  }
+const createPhonesInDB = async (phonesData: TPhones) => {
+  const result = await Phones.create(phonesData);
+  return result;
+};
 
 // Get all phones
 const getAllOrSearchPhonesFromDB = async (searchTerm?: string) => {
@@ -28,12 +29,32 @@ const getSingleProductFromDB = async (id: string) => {
 };
 
 //  Update product info
-const updateProductByIDInDB = async (id: string, updateData: UpdatePhoneData) => {
-  const updatedPhone = await Phones.updateOne({
-    _id: id,
-    $set: updateData,
-  });
-  return updatedPhone;
+const updateProductByIdInDB = async (
+  id: string,
+  updateData: UpdatePhoneData
+) => {
+  try {
+    const updatedResult = await Phones.updateOne(
+      { _id: id },
+      { $set: updateData }
+    );
+
+    if (updatedResult.matchedCount === 0) {
+      throw new Error('No phone found with the provided ID');
+    }
+
+    // Fetch the updated document
+    const updatedPhone = await Phones.findById(id).lean();
+
+    if (!updatedPhone) {
+      throw new Error('Failed to fetch the updated phone');
+    }
+
+    return updatedPhone;
+  } catch (error) {
+    console.error('Error updating phone data:', error);
+    throw error;
+  }
 };
 
 // Delete product
@@ -42,13 +63,10 @@ const deleteProductFromDB = async (id: string) => {
   return result;
 };
 
-
 export const PhonesServices = {
   createPhonesInDB,
   getAllOrSearchPhonesFromDB,
   getSingleProductFromDB,
-  updateProductByIDInDB,
+  updateProductByIdInDB,
   deleteProductFromDB,
 };
-
-

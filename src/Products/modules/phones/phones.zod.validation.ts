@@ -23,7 +23,4 @@ const phoneSchema = z.object({
   inventory: inventorySchema,
 });
 
-// Create a schema for an array of phones
-const phonesArrayValidationSchema = z.array(phoneSchema);
-
-export default phonesArrayValidationSchema
+export default phoneSchema;
